@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects (the same rules as vercel.json).
+# Pages already serves /page.html at /page and sends /index.html to /.
+# The magick-agency.com -> www redirect matches on host, which this file can't do: set it up as a
+# Redirect Rule in the Cloudflare dashboard (see README).
+
+/index.php            /             301
+/sitemap-index.xml    /sitemap.xml  301
