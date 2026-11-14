@@ -77,11 +77,12 @@ not real customer numbers.
 The site is static, so any static host works. Both are set up:
 
 - **Vercel:** `vercel.json` holds the headers, redirects and the apex-to-www redirect.
-- **Cloudflare Pages:** `public/_headers` and `public/_redirects` hold the same rules. Create a Pages project from
-  this repo with the Astro preset (build command `npm run build`, output `dist`; Pages reads `.nvmrc`). Add both
-  `www.magick-agency.com` and `magick-agency.com` as custom domains, then add a Redirect Rule in the Cloudflare
-  dashboard sending `magick-agency.com/*` to `https://www.magick-agency.com/${1}` (301, keep the query string), since
-  `_redirects` can't match on host.
+- **Cloudflare (Workers):** `wrangler.jsonc` serves `dist/` as static assets, and `public/_headers` and
+  `public/_redirects` hold the same rules as `vercel.json`. In the dashboard, import this repo with build command
+  `npm run build` and deploy command `npx wrangler deploy` (Cloudflare reads `.nvmrc`). Add both
+  `www.magick-agency.com` and `magick-agency.com` as custom domains, then add a Redirect Rule sending
+  `magick-agency.com/*` to `https://www.magick-agency.com/${1}` (301, keep the query string), since `_redirects`
+  can't match on host.
 
 Either way, set `PUBLIC_*` variables (see `.env.example`) in the host's build settings: they are read at build time.
 
