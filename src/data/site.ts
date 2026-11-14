@@ -47,11 +47,28 @@ export const SITE = {
 export const HOME_UPDATED: string = SITE.homeUpdated > SITE.lastUpdated ? SITE.homeUpdated : SITE.lastUpdated
 
 /**
- * The company's official profiles elsewhere: LinkedIn, Crunchbase, G2, Capterra, the Play Store and
- * App Store listings, and so on. They go into the Organization's JSON-LD `sameAs` and /llms.txt, which
- * is how search and AI engines tie those profiles to this site. Add only real, live URLs.
+ * Magick Agency's own profiles elsewhere (LinkedIn, Crunchbase, G2, app store listings). They go into
+ * the Organization's JSON-LD `sameAs` and /llms.txt. Add only real, live URLs for Magick Agency itself;
+ * the company's MagickVoice profiles belong in PARENT below.
  */
 export const PROFILES: readonly string[] = []
+
+/**
+ * MagickVoice, the company behind Magick Agency (same legal entity). Emitted as the Organization's
+ * parentOrganization in JSON-LD and listed in /llms.txt, so search and AI engines connect the two brands
+ * without treating them as one product.
+ */
+export const PARENT = {
+  name: 'MagickVoice',
+  url: 'https://www.magickvoice.com',
+  profiles: [
+    'https://www.linkedin.com/company/magickvoice',
+    'https://www.youtube.com/@MagickVoiceAgent',
+    'https://www.instagram.com/magickvoiceai/',
+    'https://www.facebook.com/magickvoice/',
+    'https://www.producthunt.com/p/magickvoice',
+  ],
+} as const
 
 export const LINKS = {
   app: 'https://app.magick-agency.com',

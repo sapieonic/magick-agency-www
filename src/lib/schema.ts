@@ -3,7 +3,7 @@
  * the shared Organization / WebSite / SoftwareApplication nodes by @id, so
  * search engines and LLMs resolve them as one entity.
  */
-import { CONTACT, CONTACT_LINKS, FEATURES, KEY_FACTS, PROFILES, SITE, absUrl, useCasePath } from '@/data/site'
+import { CONTACT, CONTACT_LINKS, FEATURES, KEY_FACTS, PARENT, PROFILES, SITE, absUrl, useCasePath } from '@/data/site'
 
 export const ORG_ID = absUrl('/#organization')
 export const SITE_ID = absUrl('/#website')
@@ -20,6 +20,13 @@ export function organization(): Node {
     alternateName: SITE.alternateNames,
     url: absUrl('/'),
     ...(PROFILES.length ? { sameAs: PROFILES } : {}),
+    parentOrganization: {
+      '@type': 'Organization',
+      name: PARENT.name,
+      legalName: SITE.legalName,
+      url: PARENT.url,
+      sameAs: PARENT.profiles,
+    },
     logo: {
       '@type': 'ImageObject',
       url: absUrl('/brand/logo-512.png'),

@@ -94,8 +94,9 @@ Once the domain is live:
    [Bing Webmaster Tools](https://www.bing.com/webmasters) (Bing also feeds ChatGPT search and Copilot). Choose the
    HTML-tag method and paste only the `content` token into `SITE.verification` in `src/data/site.ts`.
 2. Submit `https://www.magick-agency.com/sitemap.xml` in both.
-3. Add the company's real profile URLs (LinkedIn, Crunchbase, G2, Capterra, app store listings) to `PROFILES`. They
+3. Add Magick Agency's own profile URLs (LinkedIn, Crunchbase, G2, Capterra, app store listings) to `PROFILES`. They
    go into the JSON-LD `sameAs` and `/llms.txt`, so search and AI engines can tie them to this site.
+   MagickVoice's profiles live in `PARENT` and go out as the Organization's `parentOrganization`.
 
 ## Contact form
 
