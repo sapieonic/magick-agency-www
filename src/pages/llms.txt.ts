@@ -9,6 +9,7 @@ import {
   CONTACT_LINKS,
   KEY_FACTS,
   LINKS,
+  PARENT,
   PROFILES,
   SITE,
   TRUST,
@@ -55,6 +56,13 @@ ${USE_CASES.map((u) => `- [${u.title}](${url(useCasePath(u.slug))}): ${u.short}`
 - [Sales](mailto:${CONTACT.salesEmail}): ${CONTACT.salesEmail}
 - [General enquiries](mailto:${CONTACT.infoEmail}): ${CONTACT.infoEmail}
 ${PROFILES.length ? `\nOfficial profiles:\n\n${PROFILES.map((p) => `- ${p}`).join('\n')}\n` : ''}
+## Company
+
+Magick Agency is made by ${PARENT.name} (${SITE.legalName}).
+
+- [${PARENT.name}](${PARENT.url}): The company's main website
+${PARENT.profiles.map((p) => `- ${p}`).join('\n')}
+
 ## Optional
 
 - [Privacy policy](${url('/privacy')}): How we handle your data

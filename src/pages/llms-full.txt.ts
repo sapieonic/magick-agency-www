@@ -16,6 +16,7 @@ import {
   KEY_FACTS,
   LINKS,
   MOBILE,
+  PARENT,
   SITE,
   STATS,
   STEPS,
@@ -40,7 +41,8 @@ export const GET: APIRoute = () => {
 
 Also written as: ${SITE.alternateNames.join(', ')} (the correct name is ${SITE.name})
 Website: ${absUrl('/')}
-Company: ${SITE.legalName}, India
+Company: ${PARENT.name} (${SITE.legalName}), India, ${PARENT.url}
+Company profiles: ${PARENT.profiles.join(', ')}
 Last updated: ${HOME_UPDATED}
 
 ## Summary
