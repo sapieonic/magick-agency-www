@@ -1,0 +1,27 @@
+---
+/** The console's chrome (sidebar + main) for the HTML mock-ups. Decorative only. */
+interface Props {
+  active: 'Home' | 'Campaigns' | 'Station' | 'Insights' | 'Calls' | 'Reports'
+  agent?: boolean
+}
+
+const { active, agent = false } = Astro.props
+const items = agent
+  ? ['Station', 'Home', 'Calls', 'Insights', 'Reports']
+  : ['Home', 'Campaigns', 'Insights', 'Calls', 'Reports', 'Team', 'Settings']
+---
+
+<div class="mk-app">
+  <div class="mk-side">
+    <div class="mk-brand">
+      <img src="/brand/logo-64.webp" width="64" height="73" alt="" loading="lazy" />
+      Magick Agency
+    </div>
+    {items.map((i) => (
+      <div class:list={['mk-nav', { 'is-on': i === active }]}>{i === 'Station' ? 'My station' : i}</div>
+    ))}
+  </div>
+  <div class="mk-main">
+    <slot />
+  </div>
+</div>

@@ -1,0 +1,240 @@
+---
+import SectionHead from '@/components/SectionHead.astro'
+import { pad2 } from '@/lib/format'
+import Screen from '@/components/Screen.astro'
+import StationMock from '@/components/mock/StationMock.astro'
+import ReportsMock from '@/components/mock/ReportsMock.astro'
+import { CONSOLE_SCREENS, homeIndex, KEY_FACTS, SITE } from '@/data/site'
+
+// Mock-ups for the screens that have no real screenshot yet (SCREENSHOTS[id].src is null).
+const MOCKS: Partial<Record<(typeof CONSOLE_SCREENS)[number]['id'], typeof StationMock>> = {
+  station: StationMock,
+  reports: ReportsMock,
+}
+const tabs = CONSOLE_SCREENS.map((t) => ({ ...t, Mock: MOCKS[t.id] }))
+---
+
+<section class="section section--rule" id="product" aria-labelledby="product-title">
+  <div class="container">
+    <SectionHead id="product-title" index={homeIndex('product')} label="The console">
+      One console for the whole floor
+      <Fragment slot="lead">
+        Agents take calls, supervisors run the floor and managers read the numbers. Same screen, same data, no exports
+        to stitch together.
+      </Fragment>
+    </SectionHead>
+
+    <div class="showcase" data-showcase>
+      <div class="tabs" role="tablist" aria-label="Product screens" aria-orientation="vertical">
+        {tabs.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`shot-tab-${t.id}`}
+            aria-controls={`shot-panel-${t.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? undefined : '-1'}
+          >
+            <span class="tab-num item-num">{pad2(i + 1)}</span>
+            <span class="tab-body">
+              <span class="tab-title">{t.label}</span>
+              <span class="tab-text">{t.text}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div class="panels">
+        {tabs.map((t, i) => (
+          <div
+            role="tabpanel"
+            id={`shot-panel-${t.id}`}
+            aria-labelledby={`shot-tab-${t.id}`}
+            class="panel"
+            hidden={i !== 0}
+          >
+            <Screen shot={t.id}>{t.Mock && <t.Mock />}</Screen>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="about">
+      <div data-reveal>
+        <p class="label">What is {SITE.name}?</p>
+        <p class="about-def">{SITE.definition}</p>
+      </div>
+      <dl class="facts" data-reveal style="--delay:100ms">
+        {KEY_FACTS.map(([term, value]) => (
+          <div>
+            <dt class="label-sm">{term}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-showcase]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'))
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      tabs.forEach((t) => {
+        const on = t === tab
+        t.setAttribute('aria-selected', String(on))
+        t.tabIndex = on ? 0 : -1
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '')
+        if (panel) panel.hidden = !on
+      })
+      if (focus) tab.focus()
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab))
+      tab.addEventListener('keydown', (e) => {
+        const keys: Record<string, number> = {
+          ArrowDown: (i + 1) % tabs.length,
+          ArrowRight: (i + 1) % tabs.length,
+          ArrowUp: (i - 1 + tabs.length) % tabs.length,
+          ArrowLeft: (i - 1 + tabs.length) % tabs.length,
+          Home: 0,
+          End: tabs.length - 1,
+        }
+        const next = keys[e.key]
+        if (next === undefined) return
+        e.preventDefault()
+        select(tabs[next], true)
+      })
+    })
+  })
+</script>
+
+<style>
+  .showcase {
+    display: grid;
+    gap: 28px;
+  }
+
+  .tabs {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+
+  .tabs button {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
+    padding: 18px 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .tab-num {
+    padding-top: 3px;
+    color: var(--muted);
+  }
+
+  .tab-title {
+    display: block;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    transition: color 0.2s;
+  }
+
+  .tab-text {
+    display: none;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .tabs button:hover .tab-title,
+  .tabs button[aria-selected='true'] .tab-title {
+    color: var(--ink);
+  }
+
+  .tabs button[aria-selected='true'] .tab-num {
+    color: var(--accent);
+  }
+
+  .tabs button[aria-selected='true'] .tab-text {
+    display: block;
+  }
+
+  .tabs button:focus-visible {
+    outline-offset: -2px;
+  }
+
+  @media (min-width: 1000px) {
+    .showcase {
+      grid-template-columns: 320px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+  }
+
+  /* ---------------- What is it ---------------- */
+  .about {
+    display: grid;
+    gap: 40px 72px;
+    margin-top: clamp(80px, 10vw, 128px);
+    padding-top: clamp(40px, 5vw, 56px);
+    border-top: 1px solid var(--line);
+  }
+
+  .about-def {
+    max-width: 36ch;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(19px, 1.7vw, 22px);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+  }
+
+  .facts {
+    margin: 0;
+  }
+
+  .facts > div {
+    display: grid;
+    gap: 2px;
+    padding: 13px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .facts > div:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .facts dd {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  @media (min-width: 640px) {
+    .facts > div {
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+    }
+
+    .facts dt {
+      padding-top: 3px;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .about {
+      grid-template-columns: 1fr 1.25fr;
+    }
+  }
+</style>

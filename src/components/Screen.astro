@@ -1,0 +1,69 @@
+---
+/**
+ * A product screenshot in a browser or phone frame.
+ *
+ * If SCREENSHOTS[shot].src is set, the real image is shown. Otherwise the slot (an HTML mock-up of
+ * the same screen) is rendered, hidden from assistive tech, with the screenshot's alt text read out
+ * instead. Either way the screen takes the slot's width/height ratio, so a mock-up and the real
+ * screenshot that replaces it fill the same box.
+ *
+ * Callers size and place the frame through `class` with a :global() rule.
+ */
+import '@/styles/mock.css'
+import { LINKS, SCREENSHOTS, type ScreenshotKey } from '@/data/site'
+
+interface Props {
+  shot: ScreenshotKey
+  frame?: 'browser' | 'phone'
+  class?: string
+  eager?: boolean
+  /** The page's largest image: load it first. */
+  priority?: boolean
+  /** The image's display width, for `sizes`, when the frame's default doesn't fit. */
+  sizes?: string
+}
+
+const { shot, frame = 'browser', class: className, eager = false, priority = false, sizes: sizesProp } = Astro.props
+const s = SCREENSHOTS[shot]
+const src: string | null = s.src
+// Each screenshot has a half-width copy next to it (see SCREENSHOTS in site.ts).
+const half = s.width / 2
+const srcset = src ? `${src.replace(/\.webp$/, `-${half}.webp`)} ${half}w, ${src} ${s.width}w` : undefined
+const sizes = sizesProp ?? (frame === 'phone' ? '(min-width: 1000px) 272px, 47vw' : '(min-width: 1100px) 1000px, 100vw')
+---
+
+<figure class:list={['screen', `screen--${frame}`, className]}>
+  {frame === 'browser' && (
+    <div class="screen-bar" aria-hidden="true">
+      <span class="screen-dots">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span class="screen-url">{new URL(LINKS.app).host}</span>
+    </div>
+  )}
+  {frame === 'phone' && <span class="screen-notch" aria-hidden="true" />}
+  <div class="screen-body" style={`aspect-ratio: ${s.width} / ${s.height}`}>
+    {src ? (
+      <img
+        src={src}
+        srcset={srcset}
+        sizes={sizes}
+        alt={s.alt}
+        width={s.width}
+        height={s.height}
+        loading={eager || priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
+        decoding="async"
+      />
+    ) : (
+      <>
+        <span class="sr-only">{s.alt}</span>
+        <div class="mk" aria-hidden="true">
+          <slot />
+        </div>
+      </>
+    )}
+  </div>
+</figure>

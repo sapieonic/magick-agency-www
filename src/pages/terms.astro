@@ -1,0 +1,13 @@
+---
+import Legal from '@/layouts/Legal.astro'
+import content from '@/content/legal/terms.html?raw'
+---
+
+<Legal
+  title="Terms of Service | Magick Agency"
+  heading="Terms of Service"
+  description="The terms for using Magick Agency: the service, accounts, calling responsibly in India, and your data."
+  path="/terms"
+>
+  <Fragment set:html={content} />
+</Legal>

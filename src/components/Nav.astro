@@ -1,0 +1,205 @@
+---
+import Logo from './Logo.astro'
+import Icon from './Icon.astro'
+import { CONTACT_LINKS, LINKS, NAV } from '@/data/site'
+---
+
+<header class="nav" data-nav>
+  <div class="container nav-inner">
+    <a href="/" class="nav-brand" aria-label="Magick Agency home">
+      <Logo size={30} />
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      {NAV.map((l) => (
+        <a href={l.href}>{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="nav-actions">
+      <a href={LINKS.app} class="nav-signin" data-app-link>
+        Sign in
+      </a>
+      <a href={CONTACT_LINKS.demo} class="btn btn-dark btn-sm" data-track-cta="navbar" data-cta-label="Book a demo">
+        Book a demo
+      </a>
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+        data-nav-toggle
+      >
+        <span class="icon-open">
+          <Icon name="menu" size={22} />
+        </span>
+        <span class="icon-close">
+          <Icon name="x" size={22} />
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+    <div class="container">
+      <nav aria-label="Mobile">
+        {NAV.map((l) => (
+          <a href={l.href}>{l.label}</a>
+        ))}
+        <a href={LINKS.app} data-app-link>
+          Sign in
+        </a>
+      </nav>
+      <a
+        href={CONTACT_LINKS.demo}
+        class="btn btn-primary btn-block"
+        data-track-cta="navbar_mobile"
+        data-cta-label="Book a demo"
+      >
+        Book a demo
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]')
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]')
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]')
+
+  const onScroll = () => nav?.classList.toggle('is-scrolled', window.scrollY > 12)
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu || !nav) return
+    toggle.setAttribute('aria-expanded', String(open))
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+    nav.classList.toggle('is-open', open)
+    menu.hidden = !open
+  }
+
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'))
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)))
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || toggle?.getAttribute('aria-expanded') !== 'true') return
+    setOpen(false)
+    toggle.focus()
+  })
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--line);
+    background: rgba(250, 250, 249, 0.92);
+    backdrop-filter: saturate(1.2) blur(12px);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: var(--nav-h);
+  }
+
+  .nav-brand {
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: none;
+    gap: 28px;
+  }
+
+  .nav-links a,
+  .nav-signin {
+    color: var(--ink-2);
+    font-size: 14.5px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover,
+  .nav-signin:hover {
+    color: var(--ink);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .nav-signin {
+    display: none;
+  }
+
+  .nav-actions .btn {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -8px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .nav-toggle .icon-close,
+  .nav.is-open .nav-toggle .icon-open {
+    display: none;
+  }
+
+  .nav.is-open .nav-toggle .icon-close {
+    display: block;
+  }
+
+  .mobile-menu {
+    max-height: calc(100dvh - var(--nav-h));
+    padding: 8px 0 24px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-menu nav {
+    display: grid;
+    margin-bottom: 16px;
+  }
+
+  .mobile-menu nav a {
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 17px;
+    font-weight: 500;
+  }
+
+  @media (min-width: 560px) {
+    .nav-actions .btn {
+      display: inline-flex;
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .nav-links,
+    .nav-signin {
+      display: flex;
+    }
+
+    .nav-toggle,
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+</style>

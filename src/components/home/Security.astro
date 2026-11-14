@@ -1,0 +1,50 @@
+---
+import Icon from '@/components/Icon.astro'
+import SectionHead from '@/components/SectionHead.astro'
+import { homeIndex, TRUST } from '@/data/site'
+---
+
+<section class="section" id="security" aria-labelledby="security-title">
+  <div class="container split">
+    <SectionHead id="security-title" index={homeIndex('security')} label="Security" layout="stack">
+      Built in India. <span class="quiet">For calls that carry sensitive details.</span>
+      <Fragment slot="lead">
+        Borrowers, patients and policyholders trust your agents with their details. This is how Magick Agency looks
+        after them.
+      </Fragment>
+    </SectionHead>
+
+    <ul class="sec-list rule-list">
+      {TRUST.map((t, i) => (
+        <li data-reveal style={`--delay:${(i % 2) * 60}ms`}>
+          <Icon name={t.icon} size={20} class="sec-icon" />
+          <h3>{t.title}</h3>
+          <p>{t.detail}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sec-list li {
+    padding: 24px 0 26px;
+  }
+
+  .sec-list :global(.sec-icon) {
+    color: var(--accent);
+  }
+
+  .sec-list h3 {
+    margin: 14px 0 6px;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 700px) {
+    .sec-list {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 40px;
+    }
+  }
+</style>

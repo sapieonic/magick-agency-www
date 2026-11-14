@@ -1,0 +1,41 @@
+---
+/**
+ * A section's heading block: mono label, headline and optional lead.
+ *
+ *   <SectionHead id="faq-title" index="09" label="FAQ">Questions, answered</SectionHead>
+ *
+ * The default slot is the headline (wrap the muted second half in <span class="quiet">); the
+ * `lead` slot is the paragraph beside or under it. `split` puts the lead beside the headline on
+ * wide screens; `stack` keeps it underneath, for narrow columns such as a sticky side heading.
+ */
+interface Props {
+  /** Id of the headline, for the section's aria-labelledby. */
+  id: string
+  label: string
+  /** Section number on the home page, e.g. "01" (see homeIndex in site.ts). */
+  index?: string
+  as?: 'h1' | 'h2'
+  layout?: 'split' | 'stack'
+  reveal?: boolean
+}
+
+const { id, label, index, as: Heading = 'h2', layout = 'split', reveal = true } = Astro.props
+---
+
+<div class:list={['section-head', { 'section-head--left': layout === 'stack' }]} data-reveal={reveal || undefined}>
+  <div>
+    <p class="label">
+      {index && <b>{index}</b>}
+      {index && ' / '}
+      {label}
+    </p>
+    <Heading id={id} class="h2">
+      <slot />
+    </Heading>
+  </div>
+  {Astro.slots.has('lead') && (
+    <p class="lead">
+      <slot name="lead" />
+    </p>
+  )}
+</div>

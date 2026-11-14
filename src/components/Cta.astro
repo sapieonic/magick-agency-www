@@ -1,0 +1,112 @@
+---
+import Icon from './Icon.astro'
+import { CONTACT, CONTACT_LINKS } from '@/data/site'
+
+interface Props {
+  title?: string
+  location?: string
+}
+
+const { title = 'See it run on a campaign like yours.', location = 'footer_cta' } = Astro.props
+---
+
+<section class="cta-wrap" aria-labelledby="cta-title">
+  <div class="container">
+    <div class="cta" data-reveal>
+      <div
+        class="grid-backdrop"
+        aria-hidden="true"
+        style="--grid-mask: linear-gradient(90deg, transparent, #000 60%)"
+      ></div>
+      <div class="cta-copy">
+        <h2 id="cta-title">{title}</h2>
+        <p>A demo on your own lists and calling rules. After it, we set up a workspace for your team.</p>
+      </div>
+      <div class="cta-actions">
+        <a href={CONTACT_LINKS.demo} class="btn cta-primary" data-track-cta={location} data-cta-label="Book a demo">
+          Book a demo
+          <Icon name="arrow-right" size={18} class="icon-shift" />
+        </a>
+        <a href={`mailto:${CONTACT.salesEmail}`} class="cta-mail" data-track-email={location}>
+          or write to {CONTACT.salesEmail}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-wrap {
+    padding: 0 0 var(--section-y);
+  }
+
+  .cta {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: 36px;
+    overflow: hidden;
+    padding: clamp(40px, 7vw, 88px) clamp(24px, 6vw, 80px);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(50% 80% at 100% 100%, rgb(var(--accent-rgb) / 0.45), transparent 70%),
+      radial-gradient(40% 60% at 85% 100%, rgba(62, 179, 229, 0.18), transparent 70%), var(--dark);
+  }
+
+  .cta h2 {
+    max-width: 16ch;
+    color: #fff;
+    font-size: clamp(32px, 4.6vw, 56px);
+    letter-spacing: -0.04em;
+  }
+
+  .cta p {
+    max-width: 46ch;
+    margin-top: 18px;
+    color: var(--dark-muted);
+    font-size: clamp(16px, 1.4vw, 18px);
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+  }
+
+  .cta-primary {
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .cta-primary:hover {
+    background: #e9e6f7;
+  }
+
+  .cta-mail {
+    color: var(--dark-muted);
+    font-size: 15px;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.25);
+    text-underline-offset: 4px;
+  }
+
+  .cta-mail:hover {
+    color: #fff;
+  }
+
+  .cta :global(:focus-visible) {
+    outline-color: #fff;
+  }
+
+  @media (min-width: 1000px) {
+    .cta {
+      grid-template-columns: 1.4fr 1fr;
+      align-items: end;
+    }
+
+    .cta-actions {
+      justify-content: flex-end;
+    }
+  }
+</style>

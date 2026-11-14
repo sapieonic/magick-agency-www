@@ -1,0 +1,43 @@
+---
+import Base from '@/layouts/Base.astro'
+import Hero from '@/components/home/Hero.astro'
+import Trust from '@/components/home/Trust.astro'
+import Product from '@/components/home/Product.astro'
+import Features from '@/components/home/Features.astro'
+import AiInsights from '@/components/home/AiInsights.astro'
+import MobileApp from '@/components/home/MobileApp.astro'
+import HowItWorks from '@/components/home/HowItWorks.astro'
+import Compare from '@/components/home/Compare.astro'
+import UseCases from '@/components/home/UseCases.astro'
+import Security from '@/components/home/Security.astro'
+import Contact from '@/components/home/Contact.astro'
+import Faq from '@/components/Faq.astro'
+import { FAQS, HOME_UPDATED, SITE, USE_CASES, absUrl, homeIndex } from '@/data/site'
+import { faqPage, graph, organization, software, useCaseList, webPage, website } from '@/lib/schema'
+
+const jsonLd = graph(
+  organization(),
+  website(),
+  software(),
+  webPage({ path: '/', title: SITE.title, description: SITE.description, dateModified: HOME_UPDATED }),
+  faqPage('/', FAQS),
+  useCaseList(absUrl('/#use-cases'), USE_CASES),
+)
+---
+
+<Base title={SITE.title} description={SITE.description} path="/" jsonLd={jsonLd}>
+  <Hero />
+  <Trust />
+  <Product />
+  <Features />
+  <AiInsights />
+  <MobileApp />
+  <HowItWorks />
+  <Compare />
+  <UseCases index={homeIndex('use-cases')} label="Use cases">
+    Made for the calls <span class="quiet">your floor makes every day.</span>
+  </UseCases>
+  <Security />
+  <Faq faqs={FAQS} index={homeIndex('faq')} />
+  <Contact />
+</Base>

@@ -1,0 +1,148 @@
+---
+/** One call's AI analysis: summary, sentiment, topics, quality, custom checks. Example data only. */
+import Shell from './Shell.astro'
+
+const turns = [
+  { who: 'Agent', s: 0.6, t: 'Namaste, I am calling about your EMI that was due on 5 November.' },
+  { who: 'Customer', s: -0.3, t: 'Yes, salary is late this month. I can pay on the 18th.' },
+  { who: 'Agent', s: 0.7, t: 'No problem. I will note the 18th and call you on Monday to remind you.' },
+]
+const checks = [
+  ['Confirmed the due amount', 'Yes'],
+  ['Took a promise-to-pay date', '18 Nov'],
+  ['Offered a payment link', 'No'],
+]
+---
+
+<Shell active="Calls">
+  <div class="mk-head">
+    <div>
+      <div class="mk-title">Call with Sanjay Joshi</div>
+      <div class="mk-sub">Priya Sharma · 4:12 · Promise to pay</div>
+    </div>
+    <span class="mk-chip mk-chip--violet">Analysed</span>
+  </div>
+  <div class="mk-grid mk-split">
+    <div class="mk-grid">
+      <div class="mk-card">
+        <h4>Summary</h4>
+        <p class="an-p">
+          The customer’s salary is delayed. He agreed to pay ₹14,250 on 18 November and asked for a reminder call on
+          Monday. The agent stayed polite and confirmed the amount.
+        </p>
+      </div>
+      <div class="mk-card">
+        <h4>Transcript · sentiment per turn</h4>
+        {turns.map((t) => (
+          <div class="mk-row an-turn">
+            <span class:list={['an-dot', t.s < 0 ? 'is-neg' : 'is-pos']} />
+            <span class="mk-grow an-wrap">
+              <b>{t.who}:</b> {t.t}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="mk-grid">
+      <div class="mk-card">
+        <h4>Sentiment</h4>
+        <div class="an-sent">
+          <span class="mk-big">Positive</span>
+          <span class="mk-muted mk-num">0.62</span>
+        </div>
+        <h4 class="mk-gap">Topics</h4>
+        <div class="an-tags">
+          <span class="mk-chip mk-chip--plain">Delayed salary</span>
+          <span class="mk-chip mk-chip--plain">Promise to pay</span>
+          <span class="mk-chip mk-chip--plain">Reminder call</span>
+        </div>
+      </div>
+      <div class="mk-card">
+        <h4>Quality</h4>
+        <div class="an-q">
+          <div>
+            <span class="mk-big">9</span>
+            <span class="mk-muted">/10</span>
+            <div class="mk-muted">Coherence</div>
+          </div>
+          <div>
+            <span class="mk-big">8</span>
+            <span class="mk-muted">/10</span>
+            <div class="mk-muted">Effectiveness</div>
+          </div>
+          <div>
+            <span class="mk-big an-yes">Yes</span>
+            <div class="mk-muted">Resolved</div>
+          </div>
+        </div>
+      </div>
+      <div class="mk-card">
+        <h4>Your checks</h4>
+        {checks.map(([k, v]) => (
+          <div class="mk-row">
+            <span class="mk-grow">{k}</span>
+            <span class:list={['mk-chip', v === 'No' ? 'mk-chip--amber' : 'mk-chip--green']}>{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</Shell>
+
+<style>
+  .an-p {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .an-turn {
+    align-items: flex-start;
+  }
+
+  .an-wrap {
+    white-space: normal;
+    line-height: 1.45;
+  }
+
+  .an-dot {
+    flex: none;
+    width: 0.6em;
+    height: 0.6em;
+    margin-top: 0.4em;
+    border-radius: 50%;
+  }
+
+  .an-dot.is-pos {
+    background: var(--mk-green);
+  }
+
+  .an-dot.is-neg {
+    background: var(--mk-amber);
+  }
+
+  .an-sent {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+  }
+
+  .an-sent .mk-big {
+    color: var(--mk-green);
+  }
+
+  .an-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+  }
+
+  .an-q {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6em;
+  }
+
+  .an-yes {
+    color: var(--mk-green);
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+import SectionHead from '@/components/SectionHead.astro'
+import { pad2 } from '@/lib/format'
+import Icon from '@/components/Icon.astro'
+import Screen from '@/components/Screen.astro'
+import { CONTACT_LINKS, homeIndex, MOBILE } from '@/data/site'
+---
+
+<section class="section" id="mobile" aria-labelledby="mobile-title">
+  <div class="container">
+    <SectionHead id="mobile-title" index={homeIndex('mobile')} label="Mobile app · Android & iOS">
+      A full agent seat. <span class="quiet">On a phone.</span>
+      <Fragment slot="lead">
+        Agents get the same station on the app as on a desk, over any data connection. Open a new centre without buying
+        hardware, or bring remote agents onto the floor in an afternoon.
+      </Fragment>
+    </SectionHead>
+
+    <div class="mobile-grid">
+      <div class="phones" data-reveal>
+        <Screen shot="mobileStation" frame="phone" class="phone-a" />
+        <Screen shot="mobileCalls" frame="phone" class="phone-b" />
+      </div>
+
+      <div class="mobile-copy">
+        <ol class="m-points rule-list">
+          {MOBILE.points.map((p, i) => (
+            <li data-reveal style={`--delay:${i * 60}ms`}>
+              <span class="num item-num">{pad2(i + 1)}</span>
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <a href={CONTACT_LINKS.demo} class="arrow-link" data-track-cta="mobile" data-cta-label="See the app">
+          See the app in a demo <Icon name="arrow-right" size={17} />
+        </a>
+      </div>
+    </div>
+
+    <ul class="sizes rule-list" aria-label="For any size of team">
+      {MOBILE.sizes.map((s, i) => (
+        <li data-reveal style={`--delay:${i * 60}ms`}>
+          <h3>{s.title}</h3>
+          <p>{s.detail}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .mobile-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .phones {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(14px, 3vw, 28px);
+    padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 40px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(70% 60% at 50% 100%, rgb(var(--accent-rgb) / 0.14), transparent 70%), var(--bg-soft);
+  }
+
+  .phones :global(.phone-a),
+  .phones :global(.phone-b) {
+    width: min(47%, 272px);
+  }
+
+  .phones :global(.phone-b) {
+    margin-top: 48px;
+  }
+
+  .m-points {
+    margin-bottom: 32px;
+  }
+
+  .m-points li {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
+    padding: 20px 0;
+  }
+
+  .num {
+    padding-top: 4px;
+  }
+
+  .sizes {
+    margin-top: clamp(64px, 8vw, 96px);
+    border-top: 1px solid var(--ink);
+  }
+
+  .sizes li {
+    padding: 22px 0;
+  }
+
+  @media (min-width: 760px) {
+    .sizes {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sizes li {
+      padding-right: 28px;
+      border-bottom: 0;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .mobile-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+    }
+  }
+</style>

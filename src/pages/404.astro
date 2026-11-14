@@ -1,0 +1,50 @@
+---
+import Base from '@/layouts/Base.astro'
+import Icon from '@/components/Icon.astro'
+import { CONTACT_LINKS } from '@/data/site'
+---
+
+<Base
+  title="Page not found | Magick Agency"
+  description="This page doesn’t exist. Head back to Magick Agency to explore the power dialer for call centres."
+  path="/404"
+  noindex
+>
+  <section class="nf container">
+    <p class="label">Error 404</p>
+    <h1>
+      This line seems to be <span class="quiet">disconnected</span>
+    </h1>
+    <p class="lead">The page you were looking for doesn’t exist or has moved.</p>
+    <div class="nf-actions">
+      <a href="/" class="btn btn-primary">
+        Back to home <Icon name="arrow-right" size={18} class="icon-shift" />
+      </a>
+      <a href={CONTACT_LINKS.demo} class="btn btn-ghost">
+        <Icon name="calendar" size={18} /> Book a demo
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    justify-items: center;
+    padding-block: clamp(96px, 16vw, 180px);
+    text-align: center;
+  }
+
+  h1 {
+    max-width: 640px;
+    font-size: clamp(36px, 5vw, 56px);
+  }
+
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+</style>

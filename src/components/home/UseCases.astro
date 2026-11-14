@@ -1,0 +1,138 @@
+---
+import { pad2 } from '@/lib/format'
+import Icon from '@/components/Icon.astro'
+import SectionHead from '@/components/SectionHead.astro'
+import { USE_CASES, useCasePath } from '@/data/site'
+
+/** The use-case index. The default slot is the headline. */
+interface Props {
+  label: string
+  /** Section number on the home page. */
+  index?: string
+  /** Render as the standalone /use-cases page (h1 heading, h2 rows). */
+  asPage?: boolean
+  /** Slug to leave out — used for "more use cases" on a detail page. */
+  exclude?: string
+}
+
+const { label, index, asPage = false, exclude } = Astro.props
+const items = USE_CASES.filter((u) => u.slug !== exclude)
+const RowHeading = asPage ? 'h2' : 'h3'
+---
+
+<section class:list={['section', { 'section--soft': !asPage }]} id="use-cases" aria-labelledby="use-cases-title">
+  <div class="container">
+    <SectionHead id="use-cases-title" index={index} label={label} as={asPage ? 'h1' : 'h2'} reveal={!asPage}>
+      <slot />
+      {!exclude && (
+        <Fragment slot="lead">
+          From overdue books to inbound callbacks, here is how calling teams put Magick Agency to work.
+        </Fragment>
+      )}
+    </SectionHead>
+
+    <ul class="cases">
+      {items.map((u, i) => (
+        <li data-reveal style={`--delay:${(i % 3) * 50}ms`}>
+          <a class="case" href={useCasePath(u.slug)}>
+            <span class="case-num item-num" aria-hidden="true">
+              {pad2(USE_CASES.indexOf(u) + 1)}
+            </span>
+            <RowHeading id={`case-${u.slug}`} class="case-title">
+              {u.title}
+            </RowHeading>
+            <p class="case-short">{u.short}</p>
+            <span class="case-for label-sm">{u.industries.join(' · ')}</span>
+            <span class="case-arrow" aria-hidden="true">
+              <Icon name="arrow-right" size={20} />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cases {
+    border-top: 1px solid var(--ink);
+    list-style: none;
+  }
+
+  .cases > li {
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .case {
+    display: grid;
+    grid-template-columns: 40px 1fr 28px;
+    gap: 6px 16px;
+    padding: 26px 0;
+    transition: background-color 0.2s;
+  }
+
+  .case-num {
+    grid-row: span 3;
+    padding-top: 6px;
+    color: var(--muted);
+  }
+
+  .case-title {
+    font-size: clamp(21px, 2.2vw, 27px);
+    letter-spacing: -0.025em;
+    transition: color 0.2s;
+  }
+
+  .case-short {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+
+  .case-for {
+    grid-column: 2;
+  }
+
+  .case-arrow {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    color: var(--faint);
+    transition:
+      transform 0.3s var(--ease),
+      color 0.2s;
+  }
+
+  .case:hover .case-title,
+  .case:hover .case-arrow {
+    color: var(--accent-ink);
+  }
+
+  .case:hover .case-arrow {
+    transform: translateX(4px);
+  }
+
+  @media (min-width: 900px) {
+    .case {
+      grid-template-columns: 56px minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 0.9fr) 28px;
+      align-items: baseline;
+      gap: 24px;
+      padding: 30px 0;
+    }
+
+    .case-num {
+      grid-row: auto;
+      padding-top: 0;
+    }
+
+    .case-short,
+    .case-for {
+      grid-column: auto;
+    }
+
+    .case-arrow {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+/**
+ * Renders a Lucide icon by name, so content in src/data/site.ts can refer to icons as plain
+ * strings. Add an import and an entry here to use a new one.
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right'
+import Building from '@lucide/astro/icons/building'
+import CalendarCheck from '@lucide/astro/icons/calendar-check'
+import Check from '@lucide/astro/icons/check'
+import CircleCheck from '@lucide/astro/icons/circle-check'
+import Clock from '@lucide/astro/icons/clock'
+import FileText from '@lucide/astro/icons/file-text'
+import Lock from '@lucide/astro/icons/lock'
+import MapPin from '@lucide/astro/icons/map-pin'
+import Menu from '@lucide/astro/icons/menu'
+import Play from '@lucide/astro/icons/play'
+import Send from '@lucide/astro/icons/send'
+import Users from '@lucide/astro/icons/users'
+import X from '@lucide/astro/icons/x'
+
+const ICONS = {
+  'arrow-right': ArrowRight,
+  building: Building,
+  calendar: CalendarCheck,
+  check: Check,
+  'check-circle': CircleCheck,
+  clock: Clock,
+  'file-text': FileText,
+  lock: Lock,
+  'map-pin': MapPin,
+  menu: Menu,
+  play: Play,
+  send: Send,
+  users: Users,
+  x: X,
+}
+
+interface Props {
+  name: keyof typeof ICONS
+  size?: number
+  class?: string
+  strokeWidth?: number
+}
+
+const { name, size = 20, class: className, strokeWidth = 1.75 } = Astro.props
+const Lucide = ICONS[name]
+---
+
+<Lucide size={size} stroke-width={strokeWidth} class={className} aria-hidden="true" />

@@ -1,0 +1,76 @@
+---
+import { INDUSTRIES } from '@/data/site'
+---
+
+<section class="built" id="built-for" aria-labelledby="built-for-title">
+  <div class="container built-inner">
+    <h2 id="built-for-title" class="label">
+      Built for
+    </h2>
+    <ul>
+      {INDUSTRIES.map((i) => (
+        <li>
+          <span class="name">{i.name}</span>
+          <span class="detail">{i.detail}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .built {
+    padding: 0 0 clamp(72px, 9vw, 112px);
+  }
+
+  .built-inner {
+    display: grid;
+    gap: 8px 48px;
+  }
+
+  .built h2 {
+    margin: 0;
+    padding-top: 22px;
+  }
+
+  ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    gap: 2px;
+    padding: 18px 18px 20px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .name {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .detail {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  @media (min-width: 800px) {
+    ul {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .built-inner {
+      grid-template-columns: 160px 1fr;
+    }
+  }
+</style>

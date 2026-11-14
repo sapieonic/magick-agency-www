@@ -1,0 +1,47 @@
+---
+import Base from '@/layouts/Base.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import UseCases from '@/components/home/UseCases.astro'
+import Cta from '@/components/Cta.astro'
+import { USE_CASES, absUrl } from '@/data/site'
+import { graph, organization, software, useCaseList, webPage, website } from '@/lib/schema'
+
+const title = 'Power Dialer Use Cases: Collections, Telesales, BPO | Magick Agency'
+const description =
+  'How call centres, BPOs and collection agencies use Magick Agency for collections, telesales, client campaigns, inbound callbacks and remote agents.'
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Use cases', path: '/use-cases' },
+]
+
+const jsonLd = graph(
+  organization(),
+  website(),
+  software(),
+  webPage({ path: '/use-cases', title, description, type: 'CollectionPage', breadcrumbs: crumbs }),
+  useCaseList(absUrl('/use-cases#list'), USE_CASES),
+)
+---
+
+<Base title={title} description={description} path="/use-cases" jsonLd={jsonLd}>
+  <div class="crumb-bar">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+    </div>
+  </div>
+  <UseCases asPage label="Use cases">
+    Power dialer use cases. <span class="quiet">Where Magick Agency fits.</span>
+  </UseCases>
+  <Cta />
+</Base>
+
+<style>
+  .crumb-bar {
+    padding-top: 24px;
+    background: var(--bg-soft);
+  }
+
+  .crumb-bar + :global(.section) {
+    padding-top: clamp(40px, 6vw, 72px);
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+import { SITE, absUrl } from '@/data/site'
+import { serializeJsonLd } from '@/lib/schema'
+
+interface Props {
+  title: string
+  description: string
+  path: string
+  noindex?: boolean
+  jsonLd?: Record<string, unknown>
+}
+
+const { title, description, path, noindex = false, jsonLd } = Astro.props
+
+const canonical = absUrl(path)
+const imageUrl = absUrl(SITE.ogImage)
+const robots = noindex
+  ? 'noindex, follow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{!noindex && <link rel="canonical" href={canonical} />}
+<meta name="robots" content={robots} />
+<meta name="googlebot" content={robots} />
+<meta name="bingbot" content={noindex ? 'noindex, follow' : 'index, follow'} />
+{SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+{SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}
+
+{!noindex && (
+  <>
+    <link rel="alternate" hreflang="en" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+  </>
+)}
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+{!noindex && <meta property="og:url" content={canonical} />}
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:secure_url" content={imageUrl} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={SITE.title} />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={SITE.title} />
+
+{jsonLd && <script type="application/ld+json" is:inline set:html={serializeJsonLd(jsonLd)} />}

@@ -1,0 +1,77 @@
+---
+import SectionHead from '@/components/SectionHead.astro'
+import { pad2 } from '@/lib/format'
+import { FEATURES, homeIndex } from '@/data/site'
+---
+
+<section class="section section--rule" id="features" aria-labelledby="features-title">
+  <div class="container">
+    <SectionHead id="features-title" index={homeIndex('features')} label="What’s inside">
+      Everything a calling floor runs on. <span class="quiet">Nothing it doesn’t.</span>
+      <Fragment slot="lead">
+        Dialling, guardrails, AI review, scorecards, reports, inbound and a mobile app, built as one product rather than
+        five tools bolted together.
+      </Fragment>
+    </SectionHead>
+
+    <ol class="features rule-list">
+      {FEATURES.map((f, i) => (
+        <li data-reveal style={`--delay:${(i % 3) * 60}ms`}>
+          <span class="item-num">{pad2(i + 1)}</span>
+          <h3>{f.title}</h3>
+          <p>{f.description}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .features li {
+    padding: 28px 0 32px;
+  }
+
+  .features h3 {
+    margin: 18px 0 10px;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .features p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 700px) {
+    .features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .features li {
+      padding-right: 32px;
+    }
+
+    .features li:nth-child(2n) {
+      padding-left: 32px;
+      border-left: 1px solid var(--line);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .features {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .features li,
+    .features li:nth-child(2n) {
+      padding: 32px 32px 40px;
+      border-left: 1px solid var(--line);
+    }
+
+    .features li:nth-child(3n + 1) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>

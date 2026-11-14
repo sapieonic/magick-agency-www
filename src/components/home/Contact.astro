@@ -1,0 +1,508 @@
+---
+import Icon from '@/components/Icon.astro'
+import SectionHead from '@/components/SectionHead.astro'
+import { CONTACT, CONTACT_LINKS, homeIndex } from '@/data/site'
+
+// Real targets for /#book-demo and /#talk-to-sales, so the links scroll here even without the
+// script. Each one preselects its interest (CONTACT_LINKS keys match the INTERESTS values).
+const DEEP_LINKS = Object.entries(CONTACT_LINKS).map(([interest, href]) => ({ id: href.split('#')[1], interest }))
+
+const TEAM_SIZES = ['1–10 agents', '11–50 agents', '51–200 agents', '200+ agents']
+const INTERESTS = [
+  { value: 'demo', label: 'A product demo' },
+  { value: 'sales', label: 'Pricing and plans' },
+  { value: 'mobile', label: 'The mobile app' },
+  { value: 'other', label: 'Something else' },
+]
+---
+
+<section class="section section--soft" id="contact" aria-labelledby="contact-title">
+  {DEEP_LINKS.map((l) => (
+    <span id={l.id} class="anchor" data-interest={l.interest} aria-hidden="true" />
+  ))}
+  <div class="container contact-grid">
+    <div class="contact-copy" data-reveal>
+      <SectionHead id="contact-title" index={homeIndex('contact')} label="Book a demo" layout="stack" reveal={false}>
+        Tell us about your floor. <span class="quiet">We’ll show you the rest.</span>
+        <Fragment slot="lead">
+          Tell us about your team and the calls you make. We will show you the dialer, the AI analysis, the reports and
+          the mobile app, then set up a workspace for you.
+        </Fragment>
+      </SectionHead>
+
+      <ul class="contact-list">
+        <li>
+          <div>
+            <h3 class="label-sm">Sales</h3>
+            <a href={`mailto:${CONTACT.salesEmail}`} data-track-email="contact_section">
+              {CONTACT.salesEmail}
+            </a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3 class="label-sm">Everything else</h3>
+            <a href={`mailto:${CONTACT.infoEmail}`} data-track-email="contact_section">
+              {CONTACT.infoEmail}
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <ul class="promises">
+        <li>
+          <Icon name="check" size={16} strokeWidth={2.5} /> A reply within one business day
+        </li>
+        <li>
+          <Icon name="check" size={16} strokeWidth={2.5} /> A demo built around your own use case
+        </li>
+        <li>
+          <Icon name="check" size={16} strokeWidth={2.5} /> No hardware or telephony setup to start
+        </li>
+      </ul>
+    </div>
+
+    <div class="contact-panel card" data-reveal style="--delay:120ms" data-contact data-sales={CONTACT.salesEmail}>
+      <form class="form" novalidate>
+        <div class="form-head">
+          <h3>Request a demo</h3>
+          <p>It takes a minute. We only use these details to reply to you.</p>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="d-name">Full name</label>
+            <input
+              type="text"
+              id="d-name"
+              name="name"
+              autocomplete="name"
+              placeholder="Priya Sharma"
+              maxlength="120"
+              aria-describedby="d-name-error"
+              required
+            />
+            <span class="field-error" id="d-name-error"></span>
+          </div>
+          <div class="field">
+            <label for="d-email">Work email</label>
+            <input
+              id="d-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="priya@company.com"
+              maxlength="254"
+              aria-describedby="d-email-error"
+              required
+            />
+            <span class="field-error" id="d-email-error"></span>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="d-company">Company</label>
+            <input
+              id="d-company"
+              name="company"
+              type="text"
+              autocomplete="organization"
+              placeholder="Acme Collections"
+              maxlength="160"
+              aria-describedby="d-company-error"
+              required
+            />
+            <span class="field-error" id="d-company-error"></span>
+          </div>
+          <div class="field">
+            <label for="d-phone">
+              Phone <span class="optional">(optional)</span>
+            </label>
+            <input
+              id="d-phone"
+              name="phone"
+              type="tel"
+              autocomplete="tel"
+              placeholder="+91 98765 43210"
+              maxlength="24"
+              aria-describedby="d-phone-error"
+            />
+            <span class="field-error" id="d-phone-error"></span>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="d-size">Team size</label>
+            <select id="d-size" name="size" aria-describedby="d-size-error" required>
+              <option value="">Pick a size</option>
+              {TEAM_SIZES.map((o) => (
+                <option value={o}>{o}</option>
+              ))}
+            </select>
+            <span class="field-error" id="d-size-error"></span>
+          </div>
+          <div class="field">
+            <label for="d-interest">Interested in</label>
+            <select id="d-interest" name="interest" aria-describedby="d-interest-error" required>
+              {INTERESTS.map((o) => (
+                <option value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <span class="field-error" id="d-interest-error"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="d-message">
+            What calls does your team make? <span class="optional">(optional)</span>
+          </label>
+          <textarea
+            id="d-message"
+            name="message"
+            rows="3"
+            maxlength="3000"
+            placeholder="For example: EMI reminders for two NBFC clients, 40 agents, some working from home."
+          ></textarea>
+        </div>
+        <p class="form-alert" role="alert" data-form-error hidden></p>
+        <button type="submit" class="btn btn-primary btn-block">
+          <Icon name="send" size={18} />
+          Request a demo
+        </button>
+        <p class="fineprint">
+          By submitting, you agree we may contact you about Magick Agency. See our <a href="/privacy">Privacy Policy</a>
+          .
+        </p>
+      </form>
+      <div class="success" data-form-success hidden>
+        <span class="success-icon">
+          <Icon name="check-circle" size={28} />
+        </span>
+        <h3 tabindex="-1" data-success-title>
+          Thanks, we have your request
+        </h3>
+        <p data-success-text>We will reply within one business day to set up your demo.</p>
+        <button type="button" class="text-link" data-form-reset>
+          Send another request
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { track } from '@/lib/track'
+
+  /**
+   * Where demo requests go. With PUBLIC_CONTACT_ENDPOINT set, the form POSTs JSON there. Without it,
+   * the form opens the visitor's email app with the request filled in, addressed to sales.
+   */
+  const ENDPOINT = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? ''
+  const REQUEST_TIMEOUT_MS = 15_000
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  const root = document.querySelector<HTMLElement>('[data-contact]')
+  const form = root?.querySelector<HTMLFormElement>('form')
+  const success = root?.querySelector<HTMLElement>('[data-form-success]')
+  const alertBox = root?.querySelector<HTMLElement>('[data-form-error]')
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]')
+  const SALES = root?.dataset.sales ?? ''
+
+  /* Deep links: /#talk-to-sales preselects pricing. */
+  function applyHash() {
+    const target = location.hash ? document.getElementById(location.hash.slice(1)) : null
+    const value = target?.dataset.interest
+    if (!value) return
+    const interest = document.getElementById('d-interest') as HTMLSelectElement | null
+    if (interest) interest.value = value
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  }
+  applyHash()
+  window.addEventListener('hashchange', applyHash)
+
+  type Values = Record<string, string>
+
+  function validate(v: Values) {
+    const e: Values = {}
+    if (!v.name) e.name = 'Please enter your name'
+    if (!v.email) e.email = 'Please enter your work email'
+    else if (!EMAIL_RE.test(v.email)) e.email = 'Enter a valid email address'
+    if (!v.company) e.company = 'Please enter your company'
+    if (v.phone && (!/^\+?[0-9\s\-().]{7,}$/.test(v.phone) || v.phone.replace(/\D/g, '').length < 7))
+      e.phone = 'Enter a valid phone number'
+    if (!v.size) e.size = 'Pick a team size'
+    return e
+  }
+
+  function setError(name: string, msg?: string) {
+    const input = form?.elements.namedItem(name) as HTMLInputElement | null
+    const field = input?.closest<HTMLElement>('.field')
+    if (!field || !input) return
+    const out = field.querySelector('.field-error')
+    if (out) out.textContent = msg ?? ''
+    field.toggleAttribute('data-invalid', !!msg)
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false')
+  }
+
+  class FriendlyError extends Error {}
+
+  async function send(v: Values) {
+    if (!ENDPOINT) {
+      const body = [
+        `Name: ${v.name}`,
+        `Email: ${v.email}`,
+        `Company: ${v.company}`,
+        v.phone ? `Phone: ${v.phone}` : '',
+        `Team size: ${v.size}`,
+        `Interested in: ${v.interest}`,
+        v.message ? `\n${v.message}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n')
+      const subject = `Demo request: ${v.company}`
+      location.href = `mailto:${SALES}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      return 'mailto'
+    }
+    let res: Response
+    try {
+      res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...v, source: 'marketing_website' }),
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      })
+    } catch {
+      throw new FriendlyError('We couldn’t reach our servers. Please check your connection and try again.')
+    }
+    if (!res.ok) throw new FriendlyError(`Something went wrong on our side. Please try again, or email ${SALES}.`)
+    return 'sent'
+  }
+
+  if (form && success && alertBox && button) {
+    const buttonHTML = button.innerHTML
+    let started = false
+
+    form.addEventListener('input', (e) => {
+      if (!started) {
+        started = true
+        track('lead_form_started', { form: 'demo' })
+      }
+      setError((e.target as HTMLInputElement).name)
+      alertBox.hidden = true
+    })
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      if (button.disabled) return
+      alertBox.hidden = true
+      const values: Values = {}
+      new FormData(form).forEach((val, key) => (values[key] = String(val).trim()))
+      const errors = validate(values)
+      for (const el of Array.from(form.elements)) {
+        const name = (el as HTMLInputElement).name
+        if (name) setError(name, errors[name])
+      }
+      const first = Object.keys(errors)[0]
+      if (first) {
+        ;(form.elements.namedItem(first) as HTMLElement | null)?.focus()
+        return
+      }
+
+      button.disabled = true
+      button.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending…'
+      try {
+        const how = await send(values)
+        track('contact_form_submitted', { interest: values.interest, team_size: values.size, via: how })
+        if (how === 'mailto') {
+          const title = success.querySelector('[data-success-title]')
+          const text = success.querySelector('[data-success-text]')
+          if (title) title.textContent = 'Your email app should open now'
+          if (text)
+            text.textContent = `Press send there and we will reply within one business day. If nothing opened, write to ${SALES}.`
+        }
+        form.hidden = true
+        success.hidden = false
+        success.querySelector<HTMLElement>('h3')?.focus()
+      } catch (err) {
+        alertBox.textContent = err instanceof FriendlyError ? err.message : 'Something went wrong. Please try again.'
+        alertBox.hidden = false
+      } finally {
+        button.disabled = false
+        button.innerHTML = buttonHTML
+      }
+    })
+
+    success.querySelector('[data-form-reset]')?.addEventListener('click', () => {
+      form.reset()
+      started = false
+      success.hidden = true
+      form.hidden = false
+      form.querySelector<HTMLElement>('input')?.focus()
+    })
+  }
+</script>
+
+<style>
+  .section {
+    position: relative;
+  }
+
+  .anchor {
+    position: absolute;
+    top: 0;
+  }
+
+  .contact-grid {
+    display: grid;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .contact-copy :global(.section-head) {
+    margin-bottom: 0;
+  }
+
+  .contact-list {
+    display: grid;
+    margin-top: 40px;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .contact-list li {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .contact-list li > div {
+    min-width: 0;
+  }
+
+  .contact-list h3 {
+    margin-bottom: 4px;
+  }
+
+  .contact-list a {
+    color: var(--ink);
+    font-size: clamp(16px, 4.6vw, 18px);
+    font-weight: 600;
+    overflow-wrap: break-word;
+  }
+
+  .contact-list a:hover {
+    color: var(--accent-ink);
+  }
+
+  .promises {
+    display: grid;
+    gap: 8px;
+    margin-top: 32px;
+    list-style: none;
+    color: var(--ink-2);
+    font-size: 15.5px;
+    font-weight: 500;
+  }
+
+  .promises li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .promises :global(svg) {
+    color: var(--green);
+  }
+
+  .contact-panel {
+    padding: clamp(22px, 4vw, 36px);
+  }
+
+  .form {
+    display: grid;
+    gap: 16px;
+  }
+
+  .form-head h3 {
+    font-size: 22px;
+  }
+
+  .form-head p {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .row-2 {
+    display: grid;
+    gap: 16px;
+  }
+
+  .optional {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .fineprint {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .fineprint a {
+    color: var(--accent-ink);
+    text-decoration: underline;
+  }
+
+  .success {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 40px 12px;
+    text-align: center;
+  }
+
+  .success[hidden] {
+    display: none;
+  }
+
+  .success-icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #eefaf5;
+    color: var(--green);
+  }
+
+  .success h3 {
+    font-size: 22px;
+    outline: none;
+  }
+
+  .success p {
+    max-width: 380px;
+    color: var(--muted);
+  }
+
+  .success .text-link {
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  @media (min-width: 560px) {
+    .row-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .contact-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 64px;
+    }
+  }
+</style>

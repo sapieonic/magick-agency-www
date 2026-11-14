@@ -1,0 +1,68 @@
+---
+/** A numbered row of steps with an accent tick on each: How it works, and each use case's flow. */
+import { pad2 } from '@/lib/format'
+
+interface Props {
+  steps: readonly { title: string; detail: string }[]
+}
+
+const { steps } = Astro.props
+---
+
+<ol class="steps" style={`--cols:${steps.length}`}>
+  {steps.map((s, i) => (
+    <li data-reveal style={`--delay:${i * 70}ms`}>
+      <span class="label-sm">Step {pad2(i + 1)}</span>
+      <h3>{s.title}</h3>
+      <p>{s.detail}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 0 28px;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    padding: 22px 0 28px;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 36px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  h3 {
+    margin: 14px 0 8px;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  @media (min-width: 700px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .steps {
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    }
+  }
+</style>

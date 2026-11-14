@@ -1,0 +1,160 @@
+---
+/** Agent station: contact on screen, live call, dispositions. Example data only. */
+import Shell from './Shell.astro'
+
+const bars = Array.from({ length: 34 }, (_, i) => i)
+const fields = [
+  ['Loan account', 'HL-204918'],
+  ['EMI due', '₹14,250 · 5 Nov'],
+  ['Days past due', '8'],
+  ['City', 'Pune'],
+  ['Preferred language', 'Marathi'],
+  ['Last outcome', 'Asked for callback'],
+]
+const dispositions = ['Promise to pay', 'Paid already', 'Call back', 'Wrong number', 'Not interested', 'Do Not Call']
+---
+
+<Shell active="Station" agent>
+  <div class="mk-head">
+    <div>
+      <div class="mk-title">My station</div>
+      <div class="mk-sub">EMI reminders · November</div>
+    </div>
+    <span class="mk-chip mk-chip--green">On a call · 02:41</span>
+  </div>
+  <div class="mk-grid mk-split">
+    <div class="mk-card">
+      <div class="st-who">
+        <span class="mk-av st-av">SJ</span>
+        <div>
+          <div class="st-name">Sanjay Joshi</div>
+          <div class="mk-muted">+91 ••••• ••417 · 2nd attempt</div>
+        </div>
+      </div>
+      <div class="mk-wave st-wave">
+        {bars.map((i) => (
+          <span style={`--i:${i}`} />
+        ))}
+      </div>
+      <dl class="st-fields">
+        {fields.map(([k, v]) => (
+          <div>
+            <dt class="mk-muted">{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="st-actions">
+        <span class="mk-btn mk-btn--ghost">Mute</span>
+        <span class="mk-btn mk-btn--ghost">Hold</span>
+        <span class="mk-btn st-end">End call</span>
+      </div>
+    </div>
+    <div class="mk-card">
+      <h4>Outcome</h4>
+      <div class="st-dispo">
+        {dispositions.map((d, i) => (
+          <span class:list={['st-d', { 'is-on': i === 0 }]}>{d}</span>
+        ))}
+      </div>
+      <h4 class="mk-gap">Callback</h4>
+      <div class="st-input">Mon, 18 Nov · 11:30</div>
+      <h4 class="mk-gap">Notes</h4>
+      <div class="st-input st-notes">Will pay on salary day. Asked for a reminder call on Monday morning.</div>
+      <div class="st-save">
+        <span class="mk-muted">Next call in wrap-up 0:30</span>
+        <span class="mk-btn">Save &amp; next</span>
+      </div>
+    </div>
+  </div>
+</Shell>
+
+<style>
+  .st-who {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+  }
+
+  .st-av {
+    width: 3em;
+    height: 3em;
+    font-size: 1em;
+  }
+
+  .st-name {
+    font-family: var(--font-display);
+    font-size: 1.35em;
+    font-weight: 700;
+  }
+
+  .st-wave {
+    margin: 1em 0;
+  }
+
+  .st-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7em 1em;
+    margin: 0;
+  }
+
+  .st-fields dt {
+    font-size: 0.82em;
+  }
+
+  .st-fields dd {
+    margin: 0.1em 0 0;
+    font-weight: 600;
+  }
+
+  .st-actions {
+    display: flex;
+    gap: 0.5em;
+    margin-top: 1.2em;
+  }
+
+  .st-end {
+    margin-left: auto;
+    background: var(--mk-red);
+  }
+
+  .st-dispo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45em;
+  }
+
+  .st-d {
+    padding: 0.55em 0.7em;
+    border: 1px solid var(--mk-line);
+    border-radius: 0.6em;
+    font-weight: 500;
+  }
+
+  .st-d.is-on {
+    border-color: var(--mk-accent);
+    background: rgba(124, 92, 252, 0.16);
+  }
+
+  .st-input {
+    padding: 0.55em 0.75em;
+    border: 1px solid var(--mk-line);
+    border-radius: 0.6em;
+    background: var(--mk-bg);
+  }
+
+  .st-notes {
+    min-height: 4.2em;
+    color: var(--mk-muted);
+  }
+
+  .st-save {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6em;
+    margin-top: 1em;
+    font-size: 0.92em;
+  }
+</style>

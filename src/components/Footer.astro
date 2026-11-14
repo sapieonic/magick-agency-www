@@ -1,0 +1,190 @@
+---
+import Logo from './Logo.astro'
+import { CONTACT, CONTACT_LINKS, LINKS, SITE, USE_CASES, useCasePath } from '@/data/site'
+
+const year = new Date().getFullYear()
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" aria-label="Magick Agency home">
+          <Logo size={32} />
+        </a>
+        <p>
+          The power dialer for BPOs, call centres and collection agencies, with AI call analysis, agent scorecards,
+          scheduled reports and a mobile app for agents.
+        </p>
+      </div>
+
+      <nav aria-label="Product">
+        <h2 class="label-sm">Product</h2>
+        <a href="/#product">Console</a>
+        <a href="/#features">Features</a>
+        <a href="/#ai">AI insights</a>
+        <a href="/#mobile">Mobile app</a>
+        <a href="/#how-it-works">How it works</a>
+        <a href="/#comparison">Why Magick Agency</a>
+        <a href="/#security">Security</a>
+        <a href="/#faq">FAQ</a>
+      </nav>
+
+      <nav aria-label="Use cases">
+        <h2 class="label-sm">Use cases</h2>
+        {USE_CASES.map((u) => (
+          <a href={useCasePath(u.slug)}>{u.title}</a>
+        ))}
+      </nav>
+
+      <nav aria-label="Customers">
+        <h2 class="label-sm">Customers</h2>
+        <a href={LINKS.app} data-app-link>
+          Sign in to the console
+        </a>
+        <a href={CONTACT_LINKS.demo}>Book a demo</a>
+        <a href="/llms.txt">llms.txt</a>
+      </nav>
+
+      <div class="footer-contact">
+        <h2 class="label-sm">Contact</h2>
+        <a href={`mailto:${CONTACT.salesEmail}`} data-track-email="footer">
+          Sales
+          <br />
+          <span class="muted">{CONTACT.salesEmail}</span>
+        </a>
+        <a href={`mailto:${CONTACT.infoEmail}`} data-track-email="footer">
+          Everything else
+          <br />
+          <span class="muted">{CONTACT.infoEmail}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>
+        © {year} {SITE.name}. Built in India. Operated by <strong>{SITE.legalName}</strong>.
+      </p>
+      <div class="footer-legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: clamp(56px, 8vw, 88px) 0 calc(88px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+    font-size: 14.5px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 24px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+    max-width: 340px;
+  }
+
+  .footer-brand p {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .footer h2 {
+    margin-bottom: 14px;
+  }
+
+  .footer nav,
+  .footer-grid > div:not(.footer-brand) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-grid a {
+    color: var(--ink-2);
+    transition: color 0.2s;
+    overflow-wrap: break-word;
+  }
+
+  .footer-grid a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+
+  .footer-bottom strong {
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-legal a:hover {
+    color: var(--accent-ink);
+  }
+
+  /* Phones and tablets: full-width contact column and thumb-sized link rows */
+  @media (max-width: 899px) {
+    .footer-contact {
+      grid-column: 1 / -1;
+    }
+
+    .footer nav,
+    .footer-grid > div:not(.footer-brand) {
+      gap: 0;
+    }
+
+    .footer nav a,
+    .footer-contact a {
+      align-self: flex-start;
+      padding-block: 8px;
+    }
+
+    .footer h2 {
+      margin-bottom: 6px;
+    }
+
+    .footer-legal a {
+      padding-block: 10px;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1.5fr 0.9fr 1.2fr 0.9fr 1.4fr;
+    }
+
+    .footer-brand {
+      grid-column: auto;
+    }
+  }
+</style>

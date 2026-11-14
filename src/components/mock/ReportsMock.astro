@@ -1,0 +1,112 @@
+---
+/** Reports: report types, formats and email subscriptions. Example data only. */
+import Shell from './Shell.astro'
+
+const reports = [
+  { name: 'Agent performance review', who: 'One agent, against the floor', fmt: ['PDF', 'Excel'] },
+  { name: 'Campaign report', who: 'Outcomes, pacing and dispositions', fmt: ['PDF', 'Excel'] },
+  { name: 'Account report', who: 'Every campaign in the account', fmt: ['PDF', 'Excel'] },
+]
+const subs = [
+  { name: 'Campaign report · EMI reminders', when: 'Daily · 8:00', n: 4 },
+  { name: 'Account report · Collections', when: 'Weekly · Monday', n: 6 },
+  { name: 'Agent reviews · Team Pune', when: 'Monthly · 1st', n: 2 },
+]
+---
+
+<Shell active="Reports">
+  <div class="mk-head">
+    <div>
+      <div class="mk-title">Reports</div>
+      <div class="mk-sub">Run a report now, or send it to your team on a schedule</div>
+    </div>
+    <span class="mk-btn">New subscription</span>
+  </div>
+  <div class="mk-grid rp-cards">
+    {reports.map((r) => (
+      <div class="mk-card">
+        <div class="rp-icon">{r.fmt[0]}</div>
+        <div class="rp-name">{r.name}</div>
+        <div class="mk-muted">{r.who}</div>
+        <div class="rp-fmt">
+          {r.fmt.map((f) => (
+            <span class="mk-chip mk-chip--plain">{f}</span>
+          ))}
+          <span class="rp-run">Run now →</span>
+        </div>
+      </div>
+    ))}
+  </div>
+  <div class="mk-card">
+    <h4>Email subscriptions</h4>
+    {subs.map((s) => (
+      <div class="mk-row">
+        <span class="rp-mail">✉</span>
+        <span class="mk-grow">{s.name}</span>
+        <span class="mk-chip mk-chip--violet mk-chip--plain">{s.when}</span>
+        <span class="mk-muted rp-n">{s.n} recipients</span>
+      </div>
+    ))}
+    <div class="mk-row">
+      <span class="rp-mail is-ok">✓</span>
+      <span class="mk-grow mk-muted">Last sent today at 8:00 · 4 emails delivered</span>
+    </div>
+  </div>
+</Shell>
+
+<style>
+  .rp-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 0.9em;
+  }
+
+  .rp-icon {
+    display: grid;
+    place-items: center;
+    width: 2.6em;
+    height: 3.1em;
+    margin-bottom: 0.8em;
+    border-radius: 0.4em;
+    background: linear-gradient(160deg, var(--mk-red), #b4232a);
+    font-size: 0.85em;
+    font-weight: 800;
+  }
+
+  .rp-name {
+    margin-bottom: 0.2em;
+    font-weight: 700;
+    font-size: 1.05em;
+  }
+
+  .rp-fmt {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    margin-top: 0.9em;
+  }
+
+  .rp-run {
+    margin-left: auto;
+    color: var(--mk-accent-2);
+    font-weight: 600;
+  }
+
+  .rp-mail {
+    display: grid;
+    place-items: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 0.5em;
+    background: var(--mk-surface-2);
+    color: var(--mk-accent-2);
+  }
+
+  .rp-mail.is-ok {
+    color: var(--mk-green);
+  }
+
+  .rp-n {
+    width: 7.5em;
+    text-align: right;
+  }
+</style>

@@ -1,0 +1,322 @@
+---
+import SectionHead from '@/components/SectionHead.astro'
+import Icon from '@/components/Icon.astro'
+import Screen from '@/components/Screen.astro'
+import AnalysisMock from '@/components/mock/AnalysisMock.astro'
+import { AI_ANALYSIS, homeIndex, SCORECARD } from '@/data/site'
+
+/** Scale for the scorecard bars: a little room either side of the values. */
+const range = (m: (typeof SCORECARD.metrics)[number]) => {
+  const lo = Math.max(0, Math.min(m.p25, m.agent) - 8)
+  const hi = Math.min(100, Math.max(m.p75, m.agent) + 8)
+  return (v: number) => `${(((v - lo) / (hi - lo)) * 100).toFixed(1)}%`
+}
+---
+
+<section class="section section--dark" id="ai" aria-labelledby="ai-title">
+  <div class="container">
+    <SectionHead id="ai-title" index={homeIndex('ai')} label="AI review">
+      Every call reviewed. <span class="quiet">Not just the few QA can hear.</span>
+      <Fragment slot="lead">
+        After each call, Magick Agency writes the transcript, scores the conversation and answers the questions your QA
+        team would ask. Supervisors read a summary instead of replaying a recording.
+      </Fragment>
+    </SectionHead>
+
+    <div class="ai-screen-wrap" data-reveal>
+      <Screen shot="analysis" class="ai-screen">
+        <AnalysisMock />
+      </Screen>
+    </div>
+
+    <ul class="ai-list rule-list">
+      {AI_ANALYSIS.map((a, i) => (
+        <li data-reveal style={`--delay:${(i % 3) * 60}ms`}>
+          <h3>{a.title}</h3>
+          <p>{a.detail}</p>
+        </li>
+      ))}
+    </ul>
+
+    <div class="score">
+      <div class="score-copy" data-reveal>
+        <p class="label">Agent scorecards</p>
+        <h3 class="score-title">Measure every agent against your own best people</h3>
+        <p>
+          Each agent’s connect rate, success rate, occupancy and handling time sit next to the floor’s 25th percentile,
+          median and 75th percentile. You see who is ahead, who needs help and on which number, before the weekly
+          review.
+        </p>
+        <ul class="score-points">
+          <li>
+            <Icon name="check" size={16} strokeWidth={2.25} /> Leaderboard and best hours to call, per campaign
+          </li>
+          <li>
+            <Icon name="check" size={16} strokeWidth={2.25} /> Agent reviews as PDF or Excel, on a schedule
+          </li>
+          <li>
+            <Icon name="check" size={16} strokeWidth={2.25} /> Agents see their own numbers in the app
+          </li>
+        </ul>
+      </div>
+
+      <figure class="score-card" data-reveal style="--delay:100ms">
+        <figcaption>
+          <span class="score-name">{SCORECARD.agent} vs the floor</span>
+          <span class="score-key">
+            <span>
+              <i class="k-band"></i> 25th–75th percentile
+            </span>
+            <span>
+              <i class="k-med"></i> Median
+            </span>
+            <span>
+              <i class="k-me"></i> Agent
+            </span>
+          </span>
+        </figcaption>
+        <ul>
+          {SCORECARD.metrics.map((m) => {
+            const pos = range(m)
+            const ahead = m.agent >= m.median
+            return (
+              <li>
+                <div class="m-head">
+                  <span>{m.label}</span>
+                  <span class:list={['m-val', ahead ? 'is-up' : 'is-down']}>
+                    {m.agent}
+                    {m.unit} · {ahead ? 'above' : 'below'} median
+                  </span>
+                </div>
+                <div
+                  class="m-track"
+                  role="img"
+                  aria-label={`${m.label}: agent ${m.agent}${m.unit}; floor 25th percentile ${m.p25}${m.unit}, median ${m.median}${m.unit}, 75th percentile ${m.p75}${m.unit}`}
+                >
+                  <span class="m-band" style={`left:${pos(m.p25)};right:calc(100% - ${pos(m.p75)})`} />
+                  <span class="m-med" style={`left:${pos(m.median)}`} />
+                  <span class="m-me" style={`left:${pos(m.agent)}`} />
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+        <p class="score-note">Example figures for illustration.</p>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ai-screen-wrap :global(.ai-screen) {
+    max-width: 1080px;
+    margin-inline: auto;
+    border-color: var(--dark-line);
+    box-shadow: 0 40px 120px -40px rgb(var(--accent-rgb) / 0.55);
+  }
+
+  .ai-list {
+    margin-top: clamp(48px, 6vw, 72px);
+  }
+
+  .ai-list li {
+    padding: 24px 0 28px;
+  }
+
+  .ai-list h3 {
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 700px) {
+    .ai-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 40px;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .ai-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------------- Scorecard ---------------- */
+  .score {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+    margin-top: clamp(80px, 10vw, 128px);
+  }
+
+  .score-title {
+    max-width: 18ch;
+    font-size: clamp(28px, 3vw, 38px);
+    letter-spacing: -0.03em;
+  }
+
+  .score-copy > p:not(.label) {
+    max-width: 52ch;
+    margin-top: 16px;
+  }
+
+  .score-points {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+    list-style: none;
+    color: var(--dark-text);
+    font-size: 15px;
+  }
+
+  .score-points li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .score-points :global(svg) {
+    flex: none;
+    color: var(--dark-accent);
+    transform: translateY(3px);
+  }
+
+  .score-card {
+    margin: 0;
+    padding: 28px;
+    border: 1px solid var(--dark-line);
+    border-radius: var(--radius);
+    background: var(--dark-2);
+  }
+
+  .score-card figcaption {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+
+  .score-name {
+    color: var(--dark-text);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .score-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .score-key > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .score-key i {
+    display: inline-block;
+    width: 14px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  .k-band {
+    background: #322b55;
+  }
+
+  .k-med {
+    width: 2px !important;
+    height: 12px !important;
+    background: var(--dark-text);
+  }
+
+  .k-me {
+    width: 9px !important;
+    height: 9px !important;
+    border-radius: 50% !important;
+    background: var(--dark-accent);
+  }
+
+  .score-card ul {
+    display: grid;
+    gap: 22px;
+    list-style: none;
+  }
+
+  .m-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: var(--dark-text);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .m-val {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+
+  .m-val.is-up {
+    color: #5eead4;
+  }
+
+  .m-val.is-down {
+    color: #fbbf24;
+  }
+
+  .m-track {
+    position: relative;
+    height: 10px;
+    border-radius: 3px;
+    background: #1f1f2a;
+  }
+
+  .m-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 3px;
+    background: #322b55;
+  }
+
+  .m-med {
+    position: absolute;
+    top: -4px;
+    width: 2px;
+    height: 18px;
+    margin-left: -1px;
+    background: var(--dark-text);
+  }
+
+  .m-me {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border: 2px solid var(--dark-2);
+    border-radius: 50%;
+    background: var(--dark-accent);
+    transform: translateY(-50%);
+  }
+
+  .score-note {
+    margin-top: 22px;
+    color: var(--dark-faint);
+    font-size: 12.5px;
+  }
+
+  @media (min-width: 1000px) {
+    .score {
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+  }
+</style>

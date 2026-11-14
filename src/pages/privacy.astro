@@ -1,0 +1,13 @@
+---
+import Legal from '@/layouts/Legal.astro'
+import content from '@/content/legal/privacy.html?raw'
+---
+
+<Legal
+  title="Privacy Policy | Magick Agency"
+  heading="Privacy Policy"
+  description="How Magick Agency handles demo requests, customer data in the product, where it is hosted, how long it is kept and your rights."
+  path="/privacy"
+>
+  <Fragment set:html={content} />
+</Legal>

@@ -1,0 +1,184 @@
+---
+import SectionHead from '@/components/SectionHead.astro'
+import { COMPARISON, homeIndex } from '@/data/site'
+---
+
+<section class="section" id="comparison" aria-labelledby="compare-title">
+  <div class="container">
+    <SectionHead id="compare-title" index={homeIndex('comparison')} label="Why Magick Agency">
+      More than a dialer. <span class="quiet">Less than a project.</span>
+      <Fragment slot="lead">
+        How Magick Agency compares with dialling by hand and with a typical legacy dialer.
+      </Fragment>
+    </SectionHead>
+
+    <section class="table-wrap" data-reveal aria-label="Comparison table" tabindex="0">
+      <!-- Explicit roles keep table semantics when the phone layout restyles rows as cards -->
+      <table role="table">
+        <caption class="sr-only">Magick Agency compared with manual dialling and a typical legacy dialer</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader" class="label-sm">
+              <span class="sr-only">Capability</span>
+            </th>
+            {COMPARISON.columns.map((c, i) => (
+              <th scope="col" role="columnheader" class:list={['label-sm', { us: i === 0 }]}>
+                {c}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {COMPARISON.rows.map(([feature, ...cells]) => (
+            <tr role="row">
+              <th scope="row" role="rowheader">
+                {feature}
+              </th>
+              {cells.map((cell, i) => (
+                <td role="cell" class:list={['label-sm', { us: i === 0 }]} data-label={COMPARISON.columns[i]}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  </div>
+</section>
+
+<style>
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  th,
+  td {
+    padding: 18px 20px 18px 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  thead th {
+    padding-top: 0;
+    border-bottom-color: var(--ink);
+  }
+
+  thead th.us {
+    color: var(--accent-ink);
+  }
+
+  tbody th {
+    color: var(--ink);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td {
+    color: var(--muted);
+  }
+
+  td.us {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  td.us,
+  thead th.us {
+    padding-left: 20px;
+    border-left: 2px solid var(--accent);
+    background: var(--surface);
+  }
+
+  /* Phones: one card per capability, every column visible without sideways scrolling */
+  @media (max-width: 719px) {
+    .table-wrap {
+      overflow: visible;
+    }
+
+    table,
+    tbody,
+    tr,
+    th,
+    td {
+      display: block;
+    }
+
+    table {
+      min-width: 0;
+    }
+
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      display: grid;
+      gap: 6px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    tbody tr:last-child {
+      border-bottom: 0;
+    }
+
+    th,
+    td {
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    tbody th {
+      margin-bottom: 4px;
+      font-size: 17px;
+      white-space: normal;
+    }
+
+    td {
+      padding: 2px 0;
+      font-size: 14.5px;
+    }
+
+    td.us {
+      margin-bottom: 4px;
+      padding: 8px 12px;
+      font-size: 15px;
+    }
+
+    td::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 1px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td.us::before {
+      color: var(--accent-ink);
+    }
+  }
+</style>
