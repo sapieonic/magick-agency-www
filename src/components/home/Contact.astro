@@ -62,7 +62,14 @@ const INTERESTS = [
       </ul>
     </div>
 
-    <div class="contact-panel card" data-reveal style="--delay:120ms" data-contact data-sales={CONTACT.salesEmail}>
+    <div
+      class="contact-panel card"
+      data-reveal
+      style="--delay:120ms"
+      data-contact
+      data-sales={CONTACT.salesEmail}
+      data-endpoint={CONTACT.formEndpoint}
+    >
       <form class="form" novalidate>
         <div class="form-head">
           <h3>Request a demo</h3>
@@ -191,11 +198,6 @@ const INTERESTS = [
 <script>
   import { track } from '@/lib/track'
 
-  /**
-   * Where demo requests go. With PUBLIC_CONTACT_ENDPOINT set, the form POSTs JSON there. Without it,
-   * the form opens the visitor's email app with the request filled in, addressed to sales.
-   */
-  const ENDPOINT = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? ''
   const REQUEST_TIMEOUT_MS = 15_000
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -205,6 +207,8 @@ const INTERESTS = [
   const alertBox = root?.querySelector<HTMLElement>('[data-form-error]')
   const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]')
   const SALES = root?.dataset.sales ?? ''
+  /** CONTACT.formEndpoint. Empty: the form opens the visitor's email app instead. */
+  const ENDPOINT = root?.dataset.endpoint ?? ''
 
   /* Deep links: /#talk-to-sales preselects pricing. */
   function applyHash() {
@@ -244,36 +248,55 @@ const INTERESTS = [
 
   class FriendlyError extends Error {}
 
+  /** The selected option's label, e.g. "A product demo" rather than its value. */
+  function optionLabel(name: string) {
+    const select = form?.elements.namedItem(name) as HTMLSelectElement | null
+    return select?.selectedOptions[0]?.textContent?.trim() ?? ''
+  }
+
   async function send(v: Values) {
+    const subject = `Demo request: ${v.company}`.slice(0, 255)
+    const body = [
+      `Company: ${v.company}`,
+      `Team size: ${v.size}`,
+      `Interested in: ${optionLabel('interest') || v.interest}`,
+      v.message ? `\n${v.message}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n')
+
     if (!ENDPOINT) {
-      const body = [
-        `Name: ${v.name}`,
-        `Email: ${v.email}`,
-        `Company: ${v.company}`,
-        v.phone ? `Phone: ${v.phone}` : '',
-        `Team size: ${v.size}`,
-        `Interested in: ${v.interest}`,
-        v.message ? `\n${v.message}` : '',
-      ]
+      const mail = [`Name: ${v.name}`, `Email: ${v.email}`, v.phone ? `Phone: ${v.phone}` : '', body]
         .filter(Boolean)
         .join('\n')
-      const subject = `Demo request: ${v.company}`
-      location.href = `mailto:${SALES}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      location.href = `mailto:${SALES}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mail)}`
       return 'mailto'
     }
+
     let res: Response
     try {
       res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...v, source: 'marketing_website' }),
+        // The endpoint's schema: name, email, phone?, subject, message, source.
+        body: JSON.stringify({
+          name: v.name,
+          email: v.email,
+          // The endpoint accepts digits, spaces, + - ( ) only.
+          phone: v.phone ? v.phone.replace(/\./g, ' ') : undefined,
+          subject,
+          message: body.slice(0, 5000),
+          source: 'magick_agency_website',
+        }),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       })
     } catch {
       throw new FriendlyError('We couldn’t reach our servers. Please check your connection and try again.')
     }
-    if (!res.ok) throw new FriendlyError(`Something went wrong on our side. Please try again, or email ${SALES}.`)
-    return 'sent'
+    if (res.ok) return 'sent'
+    if (res.status === 429)
+      throw new FriendlyError('Too many requests from your network. Please wait a minute and try again.')
+    throw new FriendlyError(`Something went wrong on our side. Please try again, or email ${SALES}.`)
   }
 
   if (form && success && alertBox && button) {

@@ -77,6 +77,11 @@ export const LINKS = {
 export const CONTACT = {
   salesEmail: 'sales@magick-agency.com',
   infoEmail: 'hello@magick-agency.com',
+  /**
+   * Where the demo form POSTs. The MagickVoice backend's public contact endpoint relays each request
+   * to the sales Slack channel (5 per minute per IP). Its CORS allows www.magick-agency.com.
+   */
+  formEndpoint: 'https://appi.magickvoice.com/contact',
 } as const
 
 export const useCasePath = (slug: string) => `/use-cases/${slug}`
