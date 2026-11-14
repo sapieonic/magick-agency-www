@@ -84,7 +84,7 @@ The site is static, so any static host works. Both are set up:
   `magick-agency.com/*` to `https://www.magick-agency.com/${1}` (301, keep the query string), since `_redirects`
   can't match on host.
 
-Either way, set `PUBLIC_*` variables (see `.env.example`) in the host's build settings: they are read at build time.
+Either way, set any `PUBLIC_*` variables (see `.env.example`) in the host's build settings: they are read at build time.
 
 ## Search and AI visibility
 
@@ -100,8 +100,10 @@ Once the domain is live:
 
 ## Contact form
 
-The "Request a demo" form POSTs JSON to `PUBLIC_CONTACT_ENDPOINT` when it is set. Without it, the form opens the
-visitor's email app with the request addressed to `CONTACT.salesEmail`.
+The "Request a demo" form POSTs to `CONTACT.formEndpoint` (`https://appi.magickvoice.com/contact`), the MagickVoice
+backend's public contact endpoint. It relays each request to the sales Slack channel, allows 5 per minute per IP, and
+answers only once Slack has accepted the message. Requests show `Source: magick_agency_website`. If the endpoint is
+emptied, the form opens the visitor's email app with the request addressed to `CONTACT.salesEmail` instead.
 
 ## Analytics
 
