@@ -72,6 +72,19 @@ shows an HTML mock-up of that screen. To use a real screenshot:
 Match the existing shots where you can: browser screens at 2000 × 1070, phone screens at 720 × 1600. Use demo data,
 not real customer numbers.
 
+## Hosting
+
+The site is static, so any static host works. Both are set up:
+
+- **Vercel:** `vercel.json` holds the headers, redirects and the apex-to-www redirect.
+- **Cloudflare Pages:** `public/_headers` and `public/_redirects` hold the same rules. Create a Pages project from
+  this repo with the Astro preset (build command `npm run build`, output `dist`; Pages reads `.nvmrc`). Add both
+  `www.magick-agency.com` and `magick-agency.com` as custom domains, then add a Redirect Rule in the Cloudflare
+  dashboard sending `magick-agency.com/*` to `https://www.magick-agency.com/${1}` (301, keep the query string), since
+  `_redirects` can't match on host.
+
+Either way, set `PUBLIC_*` variables (see `.env.example`) in the host's build settings: they are read at build time.
+
 ## Search and AI visibility
 
 Once the domain is live:
